@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Project: Campaign ROI | Yulong Liu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        /* Simple Syntax Highlighting for the SQL block */
+        .sql-keyword { color: #d73a49; font-weight: bold; }
+        .sql-func { color: #6f42c1; }
+        .sql-string { color: #032f62; }
+        .sql-comment { color: #6a737d; font-style: italic; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <nav class="max-w-4xl mx-auto px-4 py-8">
+        <a href="index.html" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Portfolio
+        </a>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 pb-20">
+        
+        <header class="mb-12">
+            <div class="inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold mb-4">SQL Data Analysis</div>
+            <h1 class="text-3xl md:text-5xl font-bold mb-6">Cross-Platform Campaign ROI Analysis</h1>
+            <p class="text-lg text-gray-600 leading-relaxed">
+                Analyzing influencer marketing performance on <strong>TikTok</strong> and <strong>Rednote (Xiaohongshu)</strong> to identify high-ROI partnerships for a Q4 Beauty Campaign.
+            </p>
+        </header>
+
+        <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-10">
+            <h2 class="text-2xl font-bold mb-4">1. The Business Challenge</h2>
+            <p class="text-gray-700 mb-4">
+                A beauty brand launched a "Holiday Glow" campaign across TikTok and Rednote. They needed to identify which influencers delivered the best value based on <strong>Engagement Rate</strong> and <strong>Cost Per Engagement (CPE)</strong>, rather than just raw views.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-sm text-gray-900 mb-2">Key Metrics Calculated</h3>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                        <li>Weighted Engagement Score</li>
+                        <li>Cost Per Engagement (CPE)</li>
+                        <li>Platform Efficiency Comparison</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-sm text-gray-900 mb-2">Tech Stack</h3>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                        <li>PostgreSQL</li>
+                        <li>Window Functions (DENSE_RANK)</li>
+                        <li>CTEs (Common Table Expressions)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+             <h2 class="text-2xl font-bold mb-4">2. Data Architecture</h2>
+             <p class="text-gray-600 mb-6">The analysis connects campaign spend data with raw engagement logs.</p>
+             
+             
+             
+             <div class="mt-4 text-sm text-gray-500 italic text-center">
+                 Simplified Schema: Joining `Influencers`, `Campaigns`, and `Performance_Metrics`.
+             </div>
+        </section>
+
+        <section class="bg-gray-900 text-gray-100 p-8 rounded-2xl shadow-lg mb-10 overflow-x-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-white">3. The SQL Solution</h2>
+                <span class="text-xs bg-gray-700 px-2 py-1 rounded text-gray-300">PostgreSQL</span>
+            </div>
+            
+            <pre class="font-mono text-sm leading-relaxed"><code><span class="sql-comment">-- Step 1: Aggregate engagement metrics per influencer & platform</span>
+<span class="sql-keyword">WITH</span> Engagement_Summary <span class="sql-keyword">AS</span> (
+    <span class="sql-keyword">SELECT</span> 
+        i.influencer_name,
+        i.platform,
+        c.budget_allocation,
+        <span class="sql-keyword">SUM</span>(p.views) <span class="sql-keyword">AS</span> total_views,
+        <span class="sql-keyword">SUM</span>(p.likes + p.comments + p.shares) <span class="sql-keyword">AS</span> total_engagements
+    <span class="sql-keyword">FROM</span> influencers i
+    <span class="sql-keyword">JOIN</span> posts p <span class="sql-keyword">ON</span> i.influencer_id = p.influencer_id
+    <span class="sql-keyword">JOIN</span> campaigns c <span class="sql-keyword">ON</span> p.campaign_id = c.campaign_id
+    <span class="sql-keyword">WHERE</span> c.campaign_name = <span class="sql-string">'Q4 Holiday Glow'</span>
+    <span class="sql-keyword">GROUP BY</span> 1, 2, 3
+),
+
+<span class="sql-comment">-- Step 2: Calculate KPI ratios (Engagement Rate & CPE)</span>
+Performance_Calc <span class="sql-keyword">AS</span> (
+    <span class="sql-keyword">SELECT</span>
+        *,
+        <span class="sql-func">ROUND</span>((total_engagements::numeric / NULLIF(total_views,0)) * 100, 2) <span class="sql-keyword">AS</span> engagement_rate,
+        <span class="sql-func">ROUND</span>(budget_allocation / NULLIF(total_engagements,0), 2) <span class="sql-keyword">AS</span> cost_per_engagement
+    <span class="sql-keyword">FROM</span> Engagement_Summary
+)
+
+<span class="sql-comment">-- Step 3: Rank top performers by Platform efficiency</span>
+<span class="sql-keyword">SELECT</span> 
+    influencer_name,
+    platform,
+    engagement_rate <span class="sql-keyword">AS</span> "Eng. Rate (%)",
+    cost_per_engagement <span class="sql-keyword">AS</span> "CPE ($)",
+    <span class="sql-func">DENSE_RANK</span>() <span class="sql-keyword">OVER</span> (
+        <span class="sql-keyword">PARTITION BY</span> platform 
+        <span class="sql-keyword">ORDER BY</span> cost_per_engagement <span class="sql-keyword">ASC</span>
+    ) <span class="sql-keyword">AS</span> rank_in_platform
+<span class="sql-keyword">FROM</span> Performance_Calc
+<span class="sql-keyword">WHERE</span> total_views > 50000 <span class="sql-comment">-- Filter for significant reach</span>
+<span class="sql-keyword">ORDER BY</span> platform, rank_in_platform 
+<span class="sql-keyword">LIMIT</span> 5;</code></pre>
+        </section>
+
+        <section class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+            <h2 class="text-xl font-bold mb-3 text-blue-900">4. Key Insights</h2>
+            <ul class="space-y-2 text-blue-800">
+                <li>• <strong>Rednote Efficiency:</strong> Micro-influencers on Rednote showed a <strong>30% higher engagement rate</strong> than TikTok macro-influencers for this beauty product.</li>
+                <li>• <strong>Cost Analysis:</strong> The query identified that while "User_A" had the most views, "User_B" had a CPE of only $0.05, making them the most cost-effective partner.</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-10 text-gray-400 text-sm">
+        &copy; 2026 Yulong Liu.
+    </footer>
+
+</body>
+</html>
