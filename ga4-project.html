@@ -23,7 +23,7 @@
             <div class="text-blue-600 font-bold mb-2 tracking-widest uppercase text-sm">Case Study: E-commerce Growth</div>
             <h1 class="text-4xl md:text-5xl font-bold mb-6">GA4 Funnel Optimization: Solving the Purchase Bottleneck</h1>
             <p class="text-xl text-gray-600 leading-relaxed">
-                分析如何通过 Google Analytics 4 (GA4) 识别并优化高流量电商平台的转化瓶颈，以 Amazon 为例，将流量优势转化为实际收益。
+                Analyzing how to identify and optimise conversion bottlenecks on high-traffic e-commerce platforms using Google Analytics 4 (GA4), using Amazon as an example, to turn traffic advantages into actual revenue.
             </p>
         </header>
 
@@ -33,20 +33,20 @@
                 Data Acquisition: Beyond Basic Tracking
             </h2>
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                <p class="mb-4 text-gray-700">在处理亚马逊规模的平台时，传统的网页爬虫（Web Scraping）在动态渲染和反爬机制下效率较低。专业分析师通常采用以下两种路径获取深度数据：</p>
+                <p class="mb-4 text-gray-700">When dealing with platforms on the scale of Amazon, traditional web scraping is relatively inefficient due to dynamic rendering and anti-scraping measures. Therefore, the following two approaches are often used to obtain in-depth data:</p>
                 <ul class="space-y-4">
                     <li class="flex gap-4">
                         <div class="font-bold text-blue-600">01</div>
                         <div>
                             <p class="font-semibold">BigQuery Export (Raw Data)</p>
-                            <p class="text-sm text-gray-600">通过 GA4 与 BigQuery 的原生集成，获取每日原始事件流数据。这允许我们绕过 GA4 前端的阈值限制（Thresholding），进行更精准的用户 ID 关联分析。</p>
+                            <p class="text-sm text-gray-600">By leveraging the native integration between GA4 and BigQuery, we can access daily raw event stream data. This allows us to bypass GA4’s front-end thresholding and perform more precise user ID association analysis.</p>
                         </div>
                     </li>
                     <li class="flex gap-4">
                         <div class="font-bold text-blue-600">02</div>
                         <div>
                             <p class="font-semibold">Python API Extraction</p>
-                            <p class="text-sm text-gray-600">使用 Python 的 <code class="bg-gray-100 px-1 rounded text-pink-600">google-analytics-data</code> 库，自动抓取特定维度的转化数据（如 Device Category, Landing Page），为大规模数据清理做准备。</p>
+                            <p class="text-sm text-gray-600">Use the Python library <code class="bg-gray-100 px-1 rounded text-pink-600">google-analytics-data</code> to automatically extract conversion data for specific dimensions (such as Device Category and Landing Page) in preparation for large-scale data cleaning.</p>
                         </div>
                     </li>
                 </ul>
@@ -62,13 +62,13 @@
                 <div class="bg-white p-6 rounded-2xl border border-gray-100">
                     <h4 class="font-bold mb-4 text-red-500">The Symptom</h4>
                     <p class="text-sm text-gray-600 leading-relaxed">
-                        网站周访问量 (Sessions) 增长 20%，但结账完成率 (Purchase Rate) 下降了 15%。通过 GA4 的 <b>Path Exploration</b> 发现，流量在“进入购物车”之后大量流失。
+                        Weekly website sessions increased by 20%, but the purchase rate decreased by 15%. Using GA4’s <b>Path Exploration</b>, we discovered that a significant amount of traffic was being lost after users added items to their carts.
                     </p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl border border-gray-100">
                     <h4 class="font-bold mb-4 text-green-500">The Discovery</h4>
                     <p class="text-sm text-gray-600 leading-relaxed">
-                        利用 <b>Funnel Exploration</b> 对比发现，移动端用户在“Shipping Selection”步骤的流失率高达 65%，而桌面端仅为 20%。
+                        Using <b>Funnel Exploration</b>, we found that the drop-off rate for mobile users at the “Shipping Selection” step is as high as 65%, while for desktop users it is only 20%.
                     </p>
                 </div>
             </div>
@@ -98,7 +98,7 @@ analyze_funnel_dropoff('YOUR_PROPERTY_ID')</code></pre>
 
         <section class="bg-blue-600 text-white p-10 rounded-3xl mb-20 text-center">
             <h2 class="text-3xl font-bold mb-4">The Strategic Impact</h2>
-            <p class="mb-8 opacity-90">通过将分析结果反馈给 UI/UX 团队，优化了移动端地址填充的自动化逻辑，并移除了非必要的干扰项。</p>
+            <p class="mb-8 opacity-90">By providing feedback on the analysis results to the UI/UX team, we optimized the automated logic for address autocomplete on mobile devices and removed unnecessary distractions.</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-blue-500 bg-opacity-30 p-4 rounded-xl">
                     <div class="text-2xl font-bold">+12%</div>
