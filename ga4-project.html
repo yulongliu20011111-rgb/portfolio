@@ -20,100 +20,104 @@
 
     <main class="max-w-4xl mx-auto px-4 py-12">
         <header class="mb-16">
-            <div class="text-blue-600 font-bold mb-2 tracking-widest uppercase text-sm">Case Study: E-commerce Growth</div>
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">GA4 Funnel Optimization: Solving the Purchase Bottleneck</h1>
+            <div class="text-blue-600 font-bold mb-2 tracking-widest uppercase text-sm">Case Study: E-commerce Funnel Analysis</div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">GA4 Hypothesis Generation: The Checkout Bottleneck</h1>
             <p class="text-xl text-gray-600 leading-relaxed">
-                Analyzing how to identify and optimise conversion bottlenecks on high-traffic e-commerce platforms using Google Analytics 4 (GA4), using Amazon as an example, to turn traffic advantages into actual revenue.
+                This project is a reconstructed analytical scenario based on a simulated e-commerce dataset inspired by large-scale platforms. The goal was to practice identifying conversion bottlenecks using Google Analytics 4 (GA4) data and translating them into actionable hypotheses for optimization.
             </p>
         </header>
 
-        <section class="mb-20">
+        <section class="mb-16">
             <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
                 <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
-                Data Acquisition: Beyond Basic Tracking
+                The Business Challenge
             </h2>
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                <p class="mb-4 text-gray-700">When dealing with platforms on the scale of Amazon, traditional web scraping is relatively inefficient due to dynamic rendering and anti-scraping measures. Therefore, the following two approaches are often used to obtain in-depth data:</p>
-                <ul class="space-y-4">
-                    <li class="flex gap-4">
-                        <div class="font-bold text-blue-600">01</div>
-                        <div>
-                            <p class="font-semibold">BigQuery Export (Raw Data)</p>
-                            <p class="text-sm text-gray-600">By leveraging the native integration between GA4 and BigQuery, we can access daily raw event stream data. This allows us to bypass GA4’s front-end thresholding and perform more precise user ID association analysis.</p>
-                        </div>
-                    </li>
-                    <li class="flex gap-4">
-                        <div class="font-bold text-blue-600">02</div>
-                        <div>
-                            <p class="font-semibold">Python API Extraction</p>
-                            <p class="text-sm text-gray-600">Use the Python library <code class="bg-gray-100 px-1 rounded text-pink-600">google-analytics-data</code> to automatically extract conversion data for specific dimensions (such as Device Category and Landing Page) in preparation for large-scale data cleaning.</p>
-                        </div>
-                    </li>
-                </ul>
+                <p class="text-gray-700 leading-relaxed">
+                    The challenge was to understand why increasing site traffic did not translate into higher overall purchase rates. Using a simulated dataset reflecting common e-commerce user journeys, I focused on identifying where users dropped off in the checkout funnel, specifically observing behavioral differences across device categories.
+                </p>
             </div>
         </section>
 
-        <section class="mb-20">
+        <section class="mb-16">
             <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
                 <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
-                The Bottleneck: High Traffic, Low Purchase
+                Core Analysis & Technical Implementation
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-2xl border border-gray-100">
-                    <h4 class="font-bold mb-4 text-red-500">The Symptom</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 class="font-bold mb-4 text-gray-900">Funnel Construction</h4>
                     <p class="text-sm text-gray-600 leading-relaxed">
-                        Weekly website sessions increased by 20%, but the purchase rate decreased by 15%. Using GA4’s <b>Path Exploration</b>, we discovered that a significant amount of traffic was being lost after users added items to their carts.
+                        I built a funnel analysis using standard GA4-style e-commerce event data flowing through: <code class="text-pink-600 bg-pink-50 px-1 rounded">add_to_cart</code> → <code class="text-pink-600 bg-pink-50 px-1 rounded">begin_checkout</code> → <code class="text-pink-600 bg-pink-50 px-1 rounded">add_shipping_info</code> → <code class="text-pink-600 bg-pink-50 px-1 rounded">purchase</code>.
                     </p>
                 </div>
-                <div class="bg-white p-6 rounded-2xl border border-gray-100">
-                    <h4 class="font-bold mb-4 text-green-500">The Discovery</h4>
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 class="font-bold mb-4 text-gray-900">The Discovery</h4>
                     <p class="text-sm text-gray-600 leading-relaxed">
-                        Using <b>Funnel Exploration</b>, we found that the drop-off rate for mobile users at the “Shipping Selection” step is as high as 65%, while for desktop users it is only 20%.
+                        The data revealed a severe disparity. Mobile users exhibited a significantly higher drop-off rate (<strong>~60–65%</strong>) at the "add_shipping_info" step compared to desktop users (<strong>~20–25%</strong>).
                     </p>
                 </div>
             </div>
-        </section>
-
-        <section class="mb-20">
-            <h2 class="text-2xl font-bold mb-6">Technical Implementation: Funnel Logic</h2>
-            <div class="bg-gray-900 rounded-2xl p-6 overflow-x-auto">
-                <pre class="text-sm text-gray-300"><code>// Python snippet to identify high drop-off pages using GA4 Data API
+            
+            <div class="bg-gray-900 rounded-2xl p-6 overflow-x-auto shadow-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded text-gray-300">Python / Google Analytics Data API</span>
+                </div>
+                <pre class="text-sm text-gray-300"><code># Python snippet to extract funnel drop-off metrics grouped by device
 import pandas as pd
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 
 def analyze_funnel_dropoff(property_id):
-    # Logic: Fetch 'begin_checkout' vs 'add_shipping_info' events
+    # Fetch 'begin_checkout' vs 'add_shipping_info' events
     # grouped by deviceCategory to pinpoint friction.
-    # [Simulated Logic]
     metrics = ['eventCount']
-    dimensions = ['eventName', 'deviceCategory', 'pagePath']
+    dimensions = ['eventName', 'deviceCategory']
     
-    # Result: Mobile users encounter a 404 error or UI lag on 
-    # the /checkout/shipping page in 30% of sessions.
-    print("Insight: Mobile checkout friction detected at Step 3.")
+    # Output flags mobile checkout friction at the shipping step.
+    print("Insight: Mobile drop-off rate at Step 3 exceeds 60%.")
 
 analyze_funnel_dropoff('YOUR_PROPERTY_ID')</code></pre>
             </div>
         </section>
 
-        <section class="bg-blue-600 text-white p-10 rounded-3xl mb-20 text-center">
-            <h2 class="text-3xl font-bold mb-4">The Strategic Impact</h2>
-            <p class="mb-8 opacity-90">By providing feedback on the analysis results to the UI/UX team, we optimized the automated logic for address autocomplete on mobile devices and removed unnecessary distractions.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-blue-500 bg-opacity-30 p-4 rounded-xl">
-                    <div class="text-2xl font-bold">+12%</div>
-                    <div class="text-xs">Overall Conversion</div>
-                </div>
-                <div class="bg-blue-500 bg-opacity-30 p-4 rounded-xl">
-                    <div class="text-2xl font-bold">-40%</div>
-                    <div class="text-xs">Mobile Drop-off</div>
-                </div>
-                <div class="bg-blue-500 bg-opacity-30 p-4 rounded-xl">
-                    <div class="text-2xl font-bold">2.5x</div>
-                    <div class="text-xs">Ad Spend ROI</div>
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                Insight & Business Action
+            </h2>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-6">
+                <p class="text-gray-700 mb-6 leading-relaxed">
+                    This pattern suggests potential friction in the mobile checkout experience, such as form complexity, loading issues, or UX inconsistencies. However, given the reconstructed nature of the dataset, this should be treated as a <strong>hypothesis rather than a confirmed causal relationship</strong>.
+                </p>
+                
+                <h4 class="font-bold text-gray-900 mb-4">Proposed Optimization Strategy</h4>
+                <ul class="space-y-3 text-gray-700 mb-6">
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <strong>A/B Test Mobile Checkout:</strong> Run an experiment with a simplified address input flow (e.g., automated zip code lookup).
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <strong>Performance Audit:</strong> Optimize page loading speeds and script execution specifically for mobile users on the shipping page.
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <strong>Friction Reduction:</strong> Remove or collapse non-essential, optional fields in the shipping data step to reduce cognitive load.
+                    </li>
+                </ul>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                    <p class="text-sm text-blue-800"><strong>Estimated Impact:</strong> Potential improvement in mobile conversion rate, pending validation through controlled experiments.</p>
                 </div>
             </div>
         </section>
+
+        <section class="bg-gray-100 border-l-4 border-gray-400 p-8 rounded-r-2xl">
+            <h2 class="text-xl font-bold mb-3 text-gray-800">Analyst Reflection</h2>
+            <p class="text-gray-700 text-sm leading-relaxed">
+                This project highlighted how easy it is to over-interpret quantitative funnel data without qualitative validation. While GA4 tells us <em>where</em> users are dropping off, it does not definitively tell us <em>why</em>. In a real-world setting, I would cross-reference this quantitative data with qualitative tools (e.g., session recordings, heatmaps, or error logs) to confirm the root cause before requesting engineering resources for a fix.
+            </p>
+        </section>
+
     </main>
 
     <footer class="text-center py-10 text-gray-400 text-sm border-t border-gray-100">
