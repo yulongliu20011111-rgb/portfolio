@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL Project: （Kingsoft)Seasun Games Marketing ROI | Yulong Liu</title>
+    <title>SQL Project: Seasun Games Marketing ROI | Yulong Liu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
@@ -113,4 +113,124 @@ Performance_Calc <span class="sql-keyword">AS</span> (
 <span class="sql-comment">-- Step 3: Rank top performers by Platform efficiency</span>
 <span class="sql-keyword">SELECT</span> 
     influencer_name,
-    content_category
+    content_category,
+    platform,
+    engagement_rate <span class="sql-keyword">AS</span> "Eng_Rate_Pct",
+    cost_per_engagement <span class="sql-keyword">AS</span> "CPE_RMB",
+    <span class="sql-func">DENSE_RANK</span>() <span class="sql-keyword">OVER</span> (
+        <span class="sql-keyword">PARTITION BY</span> platform 
+        <span class="sql-keyword">ORDER BY</span> cost_per_engagement <span class="sql-keyword">ASC</span>
+    ) <span class="sql-keyword">AS</span> rank_in_platform
+<span class="sql-keyword">FROM</span> Performance_Calc
+<span class="sql-keyword">WHERE</span> total_views > 100000 <span class="sql-comment">-- Filter for meaningful campaign reach</span>
+<span class="sql-keyword">ORDER BY</span> platform, rank_in_platform 
+<span class="sql-keyword">LIMIT</span> 5;</code></pre>
+        </section>
+
+        <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-10">
+            <h2 class="text-2xl font-bold mb-6">4. Query Output: Top 5 Efficient Partners</h2>
+            
+            <div class="mb-8 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <h3 class="text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wider">Avg Cost Per Engagement (CPE) by Platform</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <span class="w-20 text-sm font-medium text-gray-700">Rednote</span>
+                        <div class="w-full bg-gray-200 rounded-full h-4 mx-3">
+                            <div class="bg-red-500 h-4 rounded-full" style="width: 40%"></div>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">¥ 0.85</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-20 text-sm font-medium text-gray-700">Douyin</span>
+                        <div class="w-full bg-gray-200 rounded-full h-4 mx-3">
+                            <div class="bg-black h-4 rounded-full" style="width: 85%"></div>
+                        </div>
+                        <span class="text-sm font-bold text-gray-700">¥ 2.10</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 border-b-2 border-gray-200 text-gray-700 text-sm">
+                            <th class="p-3">Rank</th>
+                            <th class="p-3">Influencer</th>
+                            <th class="p-3">Category</th>
+                            <th class="p-3">Platform</th>
+                            <th class="p-3">Eng. Rate</th>
+                            <th class="p-3">CPE (¥)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="p-3 font-bold text-gray-900">1</td>
+                            <td class="p-3">@MMO_Tactics</td>
+                            <td class="p-3">Game Guides</td>
+                            <td class="p-3"><span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Rednote</span></td>
+                            <td class="p-3">9.2%</td>
+                            <td class="p-3 font-semibold text-green-600">¥ 0.45</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="p-3 font-bold text-gray-900">2</td>
+                            <td class="p-3">@LoreExplorer</td>
+                            <td class="p-3">Story/Lore</td>
+                            <td class="p-3"><span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Rednote</span></td>
+                            <td class="p-3">7.8%</td>
+                            <td class="p-3 font-semibold text-green-600">¥ 0.60</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="p-3 font-bold text-gray-900">3</td>
+                            <td class="p-3">@ProGamer_X</td>
+                            <td class="p-3">Highlights</td>
+                            <td class="p-3"><span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">Douyin</span></td>
+                            <td class="p-3">3.5%</td>
+                            <td class="p-3">¥ 1.20</td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="p-3 font-bold text-gray-900">4</td>
+                            <td class="p-3">@Cosplay_Yuri</td>
+                            <td class="p-3">Fan Art/Cosplay</td>
+                            <td class="p-3"><span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs">Rednote</span></td>
+                            <td class="p-3">8.1%</td>
+                            <td class="p-3">¥ 1.35</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-3 font-bold text-gray-900">5</td>
+                            <td class="p-3">@DailyGaming</td>
+                            <td class="p-3">News/Updates</td>
+                            <td class="p-3"><span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">Douyin</span></td>
+                            <td class="p-3">2.9%</td>
+                            <td class="p-3">¥ 1.80</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="bg-blue-50 border-l-4 border-blue-500 p-8 rounded-r-lg mb-10">
+            <h2 class="text-2xl font-bold mb-4 text-blue-900">5. Business Recommendations</h2>
+            <div class="space-y-4 text-blue-800">
+                <div>
+                    <h3 class="font-bold text-lg mb-1">1. Budget Reallocation Strategy</h3>
+                    <p class="text-sm">Data indicates that Rednote creators focusing on "Game Guides" and "Lore" yield a significantly lower CPE than broad gaming accounts. Recommend reallocating <strong>20% of the Douyin awareness budget</strong> toward mid-tier Rednote creators to foster core community engagement.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-1">2. Funnel Optimization Plan</h3>
+                    <p class="text-sm">Leverage platform strengths: Utilize Douyin strictly for Top-of-Funnel (ToFu) mass awareness using cinematic CG trailers and action highlights. Use Rednote for Middle-to-Bottom of Funnel (MoFu/BoFu) conversions by sponsoring detailed class guides and build setups, which drive higher game download intent.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-1">3. A/B Testing Suggestion</h3>
+                    <p class="text-sm">Initiate an A/B test for the next minor update. Test short-form gameplay highlights vs. static character lore infographics on Rednote to isolate whether the content format or the platform algorithm is the primary driver of the lower CPE.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-10 text-gray-400 text-sm">
+        &copy; 2026 Yulong Liu.
+    </footer>
+
+</body>
+</html>
